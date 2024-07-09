@@ -17,21 +17,31 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-  
-        User::truncate();
-        Task::truncate();
+
+        //User::truncate();
+        //Task::truncate();
+
+        Priority::factory()->create(
+            ['name' => 'Low',]
+        );
+        Priority::factory()->create(
+            ['name' => 'Medium',]
+        );
+        Priority::factory()->create(
+            ['name' => 'High',]
+        );
 
         User::factory()->create([
-            'name' => 'Test User',
+            'name' => 'Aaron Mena',
             'email' => 'test@example.com',
         ]);
-        $priorityDefault = Priority::find(1);
-        Task::factory(10)->create([
-            'priority_id' => $priorityDefault->id,
-        ]);
-      
-        
 
-      
+        $priorityDefault = Priority::all()->first();
+        $UserDefault = User::all()->first();
+
+        Task::factory(5)->create([
+            'priority_id' => $priorityDefault->id,
+            'user_id' => $UserDefault->id,
+        ]);
     }
 }

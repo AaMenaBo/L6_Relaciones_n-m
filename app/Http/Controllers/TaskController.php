@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Priority;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -12,7 +13,6 @@ class TaskController extends Controller
     {
 
         $tasks = Task::all();
-
         return view('tasks.index', [
             'tasks' => $tasks
         ]);
@@ -21,34 +21,27 @@ class TaskController extends Controller
     public function create()
     {
 
-        return view('tasks.create',[
-            'priorities' => Priority::all()
+        return view('tasks.create', [
+            'priorities' => Priority::all(),
+            'users' => User::all()
         ]);
     }
 
     public function show(Task $task)
     {
-
         return view('tasks.show', [
             'task' => $task
         ]);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-
-        // $task = new Task();
-
-        // $task->name = request('name'); 
-        // $task->description = request('description');
-
-        // $task->save();
-        $data = request()->validate([
+        $data = $request->validate([
             'name' => ['required', 'min:3', 'max:255'],
             'description' => ['required', 'min:3'],
-            'priority_id' => 'required|exists:priorities,id'
+            'priority_id' => 'required|exists:priorities,id',
+            'user_id' => 'required|exists:users,id'
         ]);
-
         Task::create($data);
 
         return redirect('/tasks');
@@ -56,7 +49,6 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-
         return view('tasks.edit', [
             'task' => $task
         ]);
@@ -64,15 +56,18 @@ class TaskController extends Controller
 
     public function update(Task $task)
     {
-
         $data = request()->validate([
             'name' => ['required', 'min:3', 'max:255'],
             'description' => ['required', 'min:3']
         ]);
-
-       $task->fill($data)->save();
-       //$task->update($data);
+        $task->update($data);
 
         return redirect('/tasks/' . $task->id);
+    }
+    public function complete(Task $task)
+    {
+        $task->completed = !$task->completed;
+        $task->save();
+        return redirect('/tasks');
     }
 }
