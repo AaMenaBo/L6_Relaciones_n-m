@@ -19,4 +19,12 @@ class Task extends Model
     {
         return $this->belongsTo(Priority::class);
     }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+    public function hasTag(int $tagId): bool
+    {
+        return in_array($tagId, $this->tags->pluck('id')->toArray());
+    }
 }

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Priority;
+use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -34,6 +35,16 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Aaron Mena',
             'email' => 'test@example.com',
+        ]);
+
+        Tag::create([
+            'name' => 'Academico',
+        ]);
+        Tag::create([
+            'name' => 'Pasatiempo',
+        ]);
+        Tag::create([
+            'name' => 'Pago',
         ]);
 
         $priorityDefault = Priority::all()->first();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Priority;
+use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,7 +24,8 @@ class TaskController extends Controller
 
         return view('tasks.create', [
             'priorities' => Priority::all(),
-            'users' => User::all()
+            'users' => User::all(),
+            'tags' => Tag::all()
         ]);
     }
 
@@ -40,17 +42,28 @@ class TaskController extends Controller
             'name' => ['required', 'min:3', 'max:255'],
             'description' => ['required', 'min:3'],
             'priority_id' => 'required|exists:priorities,id',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'tags' => 'exists:tags,id'
         ]);
-        Task::create($data);
-
+        $task = new Task();
+        $task->name = $data['name'];
+        $task->description = $data['description'];
+        $task->priority_id = $data['priority_id'];
+        $task->user_id = $data['user_id'];
+        $task->save();
+        if (isset($data['tags'])) {
+            $task->tags()->sync($data['tags']);
+        } else {
+            $task->tags()->detach();
+        }
         return redirect('/tasks');
     }
 
     public function edit(Task $task)
     {
         return view('tasks.edit', [
-            'task' => $task
+            'task' => $task,
+            'tags' => Tag::all()
         ]);
     }
 
@@ -58,10 +71,18 @@ class TaskController extends Controller
     {
         $data = request()->validate([
             'name' => ['required', 'min:3', 'max:255'],
-            'description' => ['required', 'min:3']
+            'description' => ['required', 'min:3'],
+            'tags' => ['exists:tags,id']
         ]);
-        $task->update($data);
 
+        $task->name = $data['name'];
+        $task->description = $data['description'];
+        if (isset($data['tags'])) {
+            $task->tags()->sync($data['tags']);
+        } else {
+            $task->tags()->detach();
+        }
+        $task->save();
         return redirect('/tasks/' . $task->id);
     }
     public function complete(Task $task)

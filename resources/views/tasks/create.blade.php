@@ -13,6 +13,7 @@
     @endif
     <form action="/tasks" method="POST">
         @csrf
+        {{-- Nombre --}}
         <div>
             <label class="form-label" for="name">Nombre</label>
             <input class="form-control" type="text" name="name" id="name">
@@ -20,6 +21,7 @@
                 <p>{{ $message }}</p>
             @enderror
         </div>
+        {{-- Prioridad --}}
         <div>
             <label class="form-label" for="name">Prioridad</label>
             <select name="priority_id" id="priority_id" class="form-control">
@@ -32,6 +34,7 @@
                 <p>{{ $message }}</p>
             @enderror
         </div>
+        {{-- Usuario --}}
         <div>
             <label class="form-label" for="name">Usuario</label>
             <select name="user_id" id="user_id" class="form-control">
@@ -43,6 +46,20 @@
                 <p>{{ $message }}</p>
             @enderror
         </div>
+        {{-- Etiquetas --}}
+        <div>
+            <label class="form-label" for="tags">Etiquetas</label>
+            <div>
+                @foreach ($tags as $tag)
+                    <input class="form-check-input" type="checkbox"
+                        value="{{ $tag->id }}"id="checkbox-{{ $tag->id }}" name="tags[]">
+                    <label class="form-check-label" for="checkbox-{{ $tag->id }}">
+                        {{ $tag->name }}
+                    </label>
+                @endforeach
+            </div>
+        </div>
+        {{-- Descripción --}}
         <div>
             <label class="form-label" for="description">Descripción</label>
             <textarea class="form-control" name="description" id="description" cols="30" rows="10"></textarea>
