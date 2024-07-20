@@ -18,9 +18,12 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-
         //User::truncate();
         //Task::truncate();
+        $this->call([
+            UserSeeder::class,
+            TaskSeeder::class,
+        ]);
 
         Priority::factory()->create(
             ['name' => 'Low',]

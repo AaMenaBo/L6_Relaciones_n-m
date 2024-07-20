@@ -21,7 +21,7 @@ class TaskFactory extends Factory
             'name' => fake()->name(),
             'description' => fake()->paragraph(),
             'completed' => false,
-            'priority_id' => Priority::factory(),
+            'priority_id' => Priority::inRandomOrder()->first()->id,
         ];
     }
 }
